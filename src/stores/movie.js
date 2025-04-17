@@ -15,7 +15,7 @@ export const useMovieStore = create((set, get) => {
       }
       set({ isLoading: true })
       const res = await fetch(
-        `https://omdbapi.com/?apikey=7035c60c&s=${searchText}`
+        `https://omdbapi.com/?apikey=9d38c929&s=${searchText}`
       )
       const { Search: movies } = await res.json()
       set({

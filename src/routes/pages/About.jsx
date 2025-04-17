@@ -1,20 +1,18 @@
-import { useState } from 'react'
-import Modal from '@/components/Modal'
+import { useCountStore } from '@/stores/count'
 
 export default function About() {
-  const [isOpen, setIsOpen] = useState(false)
+  const count = useCountStore(state => state.count)
+  const double = useCountStore(state => state.double)
+  const increase = useCountStore(state => state.increase)
+  const decrease = useCountStore(state => state.decrease)
   return (
     <>
       <h1>About Page!</h1>
-      <button onClick={() => setIsOpen(true)}>모달 켜줘!</button>
-      {isOpen && (
-        <Modal
-          offModal={() => {
-            setIsOpen(false)
-          }}>
-          <h1>나 모달임!</h1>
-        </Modal>
-      )}
+      <h2>
+        {count} / {double}
+      </h2>
+      <button onClick={() => increase()}>증가</button>
+      <button onClick={() => decrease()}>감소</button>
     </>
   )
 }

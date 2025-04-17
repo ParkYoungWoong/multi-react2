@@ -2,22 +2,23 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import Loader from '@/components/Loader'
 import Modal from '@/components/Modal'
-import { useQuery } from '@tanstack/react-query'
 
 export default function MovieDetails() {
   const { movieId } = useParams()
   const navigate = useNavigate()
+  const [movie, setMovie] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const { data: movie, isLoading } = useQuery({
-    queryKey: ['movie', 'details', movieId],
-    queryFn: async () => {
-      const res = await fetch(
-        `https://omdbapi.com/?apikey=9d38c929&i=${movieId}`
-      )
-      return res.json()
-    },
-    staleTime: 1000 * 60 // 1분
-  })
+  useEffect(() => {
+    fetchMovieDetails()
+  }, [])
+
+  async function fetchMovieDetails() {
+    const res = await fetch(`https://omdbapi.com/?apikey=9d38c929&i=${movieId}`)
+    const movie = await res.json()
+    setMovie(movie)
+    setIsLoading(false)
+  }
 
   return (
     <Modal offModal={() => navigate(-1)}>

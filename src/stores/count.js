@@ -1,28 +1,42 @@
 import { create } from 'zustand'
+import { subscribeWithSelector, persist, devtools } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
-const initialState = {
-  count: 1,
-  double: 2
-}
+export const useCountStore = create(
+  devtools(
+    persist(
+      subscribeWithSelector(
+        immer((set, get) => ({
+          count: 1,
+          double: 2,
+          increase: () => {
+            set(state => {
+              state.count += 1
+            })
+          },
+          decrease: () => {
+            set(state => {
+              state.count -= 1
+            })
+          }
+        }))
+      ),
+      {
+        name: 'countStore',
+        partialize: state => ({
+          count: state.count
+        })
+      }
+    )
+  )
+)
 
-export const useCountStore = create((set, get) => ({
-  ...initialState,
-  increase: () => {
-    const { count } = get()
-    set({ count: count + 1 })
-    // set({ 상태: 새로운값 })
-    set(state => ({
-      count: state.count + 1
-    }))
-  },
-  decrease: () => {
-    const { count } = get()
-    set({ count: count - 1 })
-  },
-  reset: () => {
-    set(initialState)
-  }
-}))
-
-// const a = () => { return {} }
-// const b = () => ({})
+// useCountStore.subscribe(선택자, 리스너)
+useCountStore.subscribe(
+  state => state.count, // 선택자
+  count => {
+    useCountStore.setState({
+      double: count * 2
+    })
+  } // 리스너
+)
