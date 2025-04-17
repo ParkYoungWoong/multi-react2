@@ -7,6 +7,7 @@ import Movies from './pages/Movies'
 import MovieDetails from './pages/MovieDetails'
 import NotFound from './pages/NotFound'
 import SignIn from './pages/SignIn'
+import Todos from './pages/Todos'
 
 import requiresAuth from './loaders/requiresAuth'
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: '/signin',
         element: <SignIn />
+      },
+      {
+        path: '/todos',
+        element: <Todos />
       }
     ]
   },

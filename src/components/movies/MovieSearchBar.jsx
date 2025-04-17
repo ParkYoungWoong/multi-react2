@@ -1,9 +1,10 @@
 import { useMovieStore } from '@/stores/movie'
-// Zustand 주의사항!: useXXXStore 훅으로 한 번에 하나의 상태(액션)만 가져와야 합니다!
+import { useMovies } from '@/hooks/movie'
 
 export default function MovieSearchBar() {
-  const fetchMovies = useMovieStore(state => state.fetchMovies)
-  const searchText = useMovieStore(state => state.searchText)
+  useMovies()
+  const inputText = useMovieStore(state => state.inputText)
+  const setInputText = useMovieStore(state => state.setInputText)
   const setSearchText = useMovieStore(state => state.setSearchText)
   const message = useMovieStore(state => state.message)
 
@@ -12,17 +13,19 @@ export default function MovieSearchBar() {
       <div className="flex gap-2">
         <input
           className="rounded-md border-1 border-gray-500 px-3 py-2"
-          value={searchText}
-          onChange={e => setSearchText(e.currentTarget.value)}
+          value={inputText}
+          onChange={e => setInputText(e.currentTarget.value)}
           onKeyDown={e => {
             if (e.key === 'Enter') {
-              fetchMovies()
+              setSearchText(inputText)
             }
           }}
         />
         <button
           className="cursor-pointer rounded-md bg-blue-100 px-3 py-2 hover:bg-blue-200"
-          onClick={() => fetchMovies()}>
+          onClick={() => {
+            setSearchText(inputText)
+          }}>
           Search!
         </button>
       </div>

@@ -1,4 +1,8 @@
+import { useQuery } from '@tanstack/react-query'
+import { useMovieStore } from '@/stores/movie'
+
 export function useMovies() {
+  const searchText = useMovieStore(state => state.searchText)
   return useQuery({
     queryKey: ['movies', searchText],
     queryFn: async () => {
@@ -8,6 +12,7 @@ export function useMovies() {
       const { Search: movies } = await res.json()
       return movies
     },
-    staleTime: 1000 * 60 // 1분
+    staleTime: 1000 * 60, // 1분
+    enabled: Boolean(searchText)
   })
 }

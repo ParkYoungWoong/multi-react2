@@ -1,10 +1,9 @@
 import { Link } from 'react-router'
-import { useMovieStore } from '@/stores/movie'
 import Loader from '@/components/Loader'
+import { useMovies } from '@/hooks/movie'
 
 export default function MovieList() {
-  const movies = useMovieStore(state => state.movies)
-  const isLoading = useMovieStore(state => state.isLoading)
+  const { data: movies = [], isLoading } = useMovies()
 
   return (
     <>
