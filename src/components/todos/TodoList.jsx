@@ -1,24 +1,8 @@
 import TodoItem from '@/components/todos/TodoItem'
-import { useQuery } from '@tanstack/react-query'
+import { useReadTodos } from '@/hooks/todo'
 
 export default function TodoList() {
-  const { data: todos = [] } = useQuery({
-    queryKey: ['todos'],
-    queryFn: async () => {
-      const res = await fetch(
-        'https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos',
-        {
-          method: 'GET',
-          headers: {
-            'content-type': 'application/json',
-            apikey: 'KDT8_bcAWVpD8',
-            username: 'KDT5_ParkYoungWoong'
-          }
-        }
-      )
-      return await res.json()
-    }
-  })
+  const { data: todos = [] } = useReadTodos()
 
   return (
     <>

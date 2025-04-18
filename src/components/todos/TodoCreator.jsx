@@ -1,34 +1,17 @@
 import { useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
+import { useCreateTodo } from '@/hooks/todo'
 
 export default function TodoCreator() {
   const [inputTitle, setInputTitle] = useState('')
-  const { mutateAsync } = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(
-        'https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos',
-        {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            apikey: 'KDT8_bcAWVpD8',
-            username: 'KDT5_ParkYoungWoong'
-          },
-          body: JSON.stringify({
-            title: inputTitle
-          })
-        }
-      )
-      return await res.json()
-    }
-  })
+  const { mutateAsync } = useCreateTodo()
   const queryClient = useQueryClient()
 
   async function handleSubmit() {
     if (inputTitle.trim() === '') {
       return
     }
-    await mutateAsync()
+    await mutateAsync({ inputTitle })
     setInputTitle('')
     queryClient.invalidateQueries({ queryKey: ['todos'] })
   }

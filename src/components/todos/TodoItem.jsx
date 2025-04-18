@@ -1,10 +1,25 @@
 import { useState, useRef } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useUpdateTodo } from '@/hooks/todo'
 
 export default function TodoItem({ todo }) {
+  const queryClient = useQueryClient()
   const [isEditMode, setIsEditMode] = useState(false)
   const [inputTitle, setInputTitle] = useState(todo.title)
   const inputRef = useRef(null)
+  const { mutateAsync } = useUpdateTodo()
 
+  async function handleSave() {
+    if (inputTitle.trim() === '' || inputTitle === todo.title) {
+      return
+    }
+    await mutateAsync({
+      todo,
+      inputTitle
+    })
+    setIsEditMode(false)
+    queryClient.invalidateQueries({ queryKey: ['todos'] })
+  }
   function handleCancel() {
     setIsEditMode(false)
     setInputTitle(todo.title)
@@ -31,7 +46,7 @@ export default function TodoItem({ todo }) {
               }
             }}
           />
-          <button>저장</button>
+          <button onClick={handleSave}>저장</button>
           <button onClick={handleCancel}>취소</button>
         </>
       ) : (
