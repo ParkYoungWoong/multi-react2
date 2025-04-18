@@ -1,19 +1,22 @@
 import { useState, useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useUpdateTodo } from '@/hooks/todo'
+import { useUpdateTodo, useDeleteTodo } from '@/hooks/todo'
+import Loader from '@/components/Loader'
 
 export default function TodoItem({ todo }) {
   const queryClient = useQueryClient()
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isDone, setIsDone] = useState(todo.done)
   const [inputTitle, setInputTitle] = useState(todo.title)
   const inputRef = useRef(null)
-  const { mutateAsync } = useUpdateTodo()
+  const { mutateAsync: updateTodo, isPending: isUpdating } = useUpdateTodo()
+  const { mutateAsync: deleteTodo, isPending: isDeleting } = useDeleteTodo()
 
   async function handleSave() {
     if (inputTitle.trim() === '' || inputTitle === todo.title) {
       return
     }
-    await mutateAsync({
+    await updateTodo({
       todo,
       inputTitle
     })
@@ -30,9 +33,14 @@ export default function TodoItem({ todo }) {
       inputRef.current.focus()
     })
   }
+  async function handleDelete() {
+    await deleteTodo({ todo })
+    queryClient.invalidateQueries({ queryKey: ['todos'] })
+  }
 
   return (
     <div>
+      <input type="checkbox" />
       {isEditMode ? (
         <>
           <input
@@ -46,14 +54,22 @@ export default function TodoItem({ todo }) {
               }
             }}
           />
-          <button onClick={handleSave}>저장</button>
+          <button
+            disabled={isUpdating}
+            onClick={handleSave}>
+            {isUpdating ? <Loader size={20} /> : '저장'}
+          </button>
           <button onClick={handleCancel}>취소</button>
         </>
       ) : (
         <>
           <div>{todo.title}</div>
           <button onClick={handleEditMode}>수정</button>
-          <button>삭제</button>
+          <button
+            disabled={isDeleting}
+            onClick={handleDelete}>
+            {isDeleting ? <Loader size={20} /> : '삭제'}
+          </button>
         </>
       )}
     </div>

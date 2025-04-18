@@ -1,9 +1,14 @@
 import styles from './Loader.module.css'
 
-export default function Loader() {
+export default function Loader({ size = 100 }) {
   return (
     <>
-      <div className={styles.hloader}>
+      <div
+        className={styles.hloader}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`
+        }}>
         <svg viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715">
           <circle
             cx="45.714285714285715"
