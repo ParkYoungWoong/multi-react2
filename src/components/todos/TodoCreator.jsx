@@ -25,6 +25,9 @@ export default function TodoCreator() {
   const queryClient = useQueryClient()
 
   async function handleSubmit() {
+    if (inputTitle.trim() === '') {
+      return
+    }
     await mutateAsync()
     setInputTitle('')
     queryClient.invalidateQueries({ queryKey: ['todos'] })
